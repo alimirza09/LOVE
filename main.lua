@@ -3,6 +3,8 @@ function love.load()
     snekBody = love.graphics.newImage("snekBodyNew.png")
     currentHeadPositionX = 100
     currentHeadPositionY = 100
+    score = 0;
+    
 end
 function love.update(dt)
     if love.keyboard.isDown("w") then
