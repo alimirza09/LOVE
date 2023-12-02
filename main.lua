@@ -1,11 +1,13 @@
 function love.load()
-    local bump = require "bump"
+    local bump = require "bum.bump"
     snekHead = love.graphics.newImage("snake.png")
     snekBody = love.graphics.newImage("snekBodyNew.png")
+    apple = love.graphics.newImage("apple.png")
     currentHeadPositionX = 100
     currentHeadPositionY = 100
     score = 0;
     numOfApples = 0;
+
 end
 function love.update(dt)
     if love.keyboard.isDown("w") then
@@ -24,7 +26,7 @@ function love.update(dt)
     end
 end
 function love.draw()
-    love.graphics.draw()
+    love.graphics.draw(apple, appleCoordX ,appleCoordY)
     love.graphics.draw(snekBody, currentHeadPositionX + 2, currentHeadPositionY + 32)
     love.graphics.draw(snekHead, currentHeadPositionX, currentHeadPositionY)
 end
