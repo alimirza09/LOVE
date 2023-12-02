@@ -18,15 +18,24 @@ function love.update(dt)
         currentHeadPositionX = currentHeadPositionX - 10
     elseif love.keyboard.isDown("s") then
         currentHeadPositionY = currentHeadPositionY + 10
+    elseif love.keyboard.isDown("e") then
+        numOfApples = 0
     end
     if numOfApples == 0 then
         appleCoordX = math.random(100, 950)
         appleCoordY = math.random(50, 700)
         numOfApples = numOfApples + 1
+        print(appleCoordX)
+        print(appleCoordY)
     end
+    if currentHeadPositionX - 10 == appleCoordX and currentHeadPositionX + 10 == appleCoordX and currentHeadPositionY -
+        10 == appleCoordY and currentHeadPositionY + 10 == appleCoordY then
+            score = score + 1
+    end
+
 end
 function love.draw()
-    love.graphics.draw(apple, appleCoordX ,appleCoordY)
     love.graphics.draw(snekBody, currentHeadPositionX + 2, currentHeadPositionY + 32)
+    love.graphics.draw(apple, appleCoordX, appleCoordY)
     love.graphics.draw(snekHead, currentHeadPositionX, currentHeadPositionY)
 end
