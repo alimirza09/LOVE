@@ -1,5 +1,4 @@
 function love.load()
-    local bump = require "bum.bump"
     snekHead = love.graphics.newImage("snake.png")
     snekBody = love.graphics.newImage("snekBodyNew.png")
     apple = love.graphics.newImage("apple.png")
@@ -28,8 +27,8 @@ function love.update(dt)
         print(appleCoordX)
         print(appleCoordY)
     end
-    if currentHeadPositionX - 10 == appleCoordX and currentHeadPositionX + 10 == appleCoordX and currentHeadPositionY -
-        10 == appleCoordY and currentHeadPositionY + 10 == appleCoordY then
+    if currentHeadPositionX - 10 == appleCoordX or currentHeadPositionX + 10 == appleCoordX or currentHeadPositionY -
+        10 == appleCoordY or currentHeadPositionY + 10 == appleCoordY then
             score = score + 1
     end
 
