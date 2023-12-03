@@ -10,13 +10,13 @@ function love.load()
 end
 function love.update(dt)
     if love.keyboard.isDown("w") then
-        currentHeadPositionY = currentHeadPositionY - 10
+        currentHeadPositionY = currentHeadPositionY - 10  * dt
     elseif love.keyboard.isDown("d") then
-        currentHeadPositionX = currentHeadPositionX + 10
+        currentHeadPositionX = currentHeadPositionX + 10 * dt
     elseif love.keyboard.isDown("a") then
-        currentHeadPositionX = currentHeadPositionX - 10
+        currentHeadPositionX = currentHeadPositionX - 10 * dt
     elseif love.keyboard.isDown("s") then
-        currentHeadPositionY = currentHeadPositionY + 10
+        currentHeadPositionY = currentHeadPositionY + 10 * dt
     elseif love.keyboard.isDown("e") then
         numOfApples = 0
     end
