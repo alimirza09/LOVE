@@ -1,12 +1,13 @@
 function love.load()
-    snekHead = love.graphics.newImage("snake.png")
+    snekHeadImage = love.graphics.newImage("snake.png")
     snekBody = love.graphics.newImage("snekBodyNew.png")
     apple = love.graphics.newImage("apple.png")
     currentHeadPositionX = 100
     currentHeadPositionY = 100
-    score = 0;
-    numOfApples = 0;
-
+    score = 0
+    numOfApples = 0
+    world = love.physics.newWorld(0 , 0 , true)
+    snekHeadBody = love.physics.newBody(world , currentHeadPositionX , currentHeadPositionY , "dynamic")
 end
 function love.update(dt)
     if love.keyboard.isDown("w") then
@@ -27,14 +28,9 @@ function love.update(dt)
         print(appleCoordX)
         print(appleCoordY)
     end
-    if currentHeadPositionX - 10 == appleCoordX or currentHeadPositionX + 10 == appleCoordX or currentHeadPositionY -
-        10 == appleCoordY or currentHeadPositionY + 10 == appleCoordY then
-            score = score + 1
-    end
-
 end
 function love.draw()
     love.graphics.draw(snekBody, currentHeadPositionX + 2, currentHeadPositionY + 32)
     love.graphics.draw(apple, appleCoordX, appleCoordY)
-    love.graphics.draw(snekHead, currentHeadPositionX, currentHeadPositionY)
+    love.graphics.draw(snekHeadImage, currentHeadPositionX, currentHeadPositionY)
 end
