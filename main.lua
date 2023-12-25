@@ -1,36 +1,37 @@
 function love.load()
-    snekHeadImage = love.graphics.newImage("snake.png")
-    snekBody = love.graphics.newImage("snekBodyNew.png")
-    apple = love.graphics.newImage("apple.png")
-    currentHeadPositionX = 100
-    currentHeadPositionY = 100
+    snekDirection = "right"
+    snek = {}
+    snekHeadImg = love.graphics.newImage("snake.png")
+    snekBodyImg = love.graphics.newImage("snekBodyNew.png")
+    snek.x = 100
+    snek.y = 100
     score = 0
-    numOfApples = 0
-    world = love.physics.newWorld(0 , 0 , true)
-    snekHeadBody = love.physics.newBody(world , currentHeadPositionX , currentHeadPositionY , "dynamic")
 end
 function love.update(dt)
-    if love.keyboard.isDown("w") then
-        currentHeadPositionY = currentHeadPositionY - 10  * dt
-    elseif love.keyboard.isDown("d") then
-        currentHeadPositionX = currentHeadPositionX + 10 * dt
-    elseif love.keyboard.isDown("a") then
-        currentHeadPositionX = currentHeadPositionX - 10 * dt
-    elseif love.keyboard.isDown("s") then
-        currentHeadPositionY = currentHeadPositionY + 10 * dt
-    elseif love.keyboard.isDown("e") then
-        numOfApples = 0
+    if love.keyboard.isDown("w") and snekDirection ~= "down" then
+        snekDirection = "up"
+    elseif love.keyboard.isDown("s") and snekDirection ~= "up" then
+        snekDirection = "down"
+    elseif love.keyboard.isDown("a") and snekDirection ~= "right" then
+        snekDirection = "left"
+    elseif love.keyboard.isDown("d") and snekDirection ~= "left" then
+        snekDirection = "right"
+    
     end
-    if numOfApples == 0 then
-        appleCoordX = math.random(100, 950)
-        appleCoordY = math.random(50, 700)
-        numOfApples = numOfApples + 1
-        print(appleCoordX)
-        print(appleCoordY)
+    if snekDirection == "right" then
+        snek.x = snek.x + 4
+    elseif snekDirection == "left" then
+        snek.x = snek.x - 4
+    elseif snekDirection == "up" then
+        snek.y = snek.y - 4
+    elseif snekDirection == "down" then
+        snek.y = snek.y + 4 
     end
 end
 function love.draw()
-    love.graphics.draw(snekBody, currentHeadPositionX + 2, currentHeadPositionY + 32)
-    love.graphics.draw(apple, appleCoordX, appleCoordY)
-    love.graphics.draw(snekHeadImage, currentHeadPositionX, currentHeadPositionY)
+    love.graphics.setColor(0.07451, 0.960784, 0.019608)
+    love.graphics.rectangle("fill",snek.x,snek.y,20,20)
+    for i = 1 , score + 3 , 1 do
+        love.graphics.rectangle("fill", snek.x, snek.y, 20, 20)
+    end
 end
