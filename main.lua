@@ -40,17 +40,14 @@ end
 function love.draw()
     love.graphics.setColor(0.07451, 0.960784, 0.019608)
     love.graphics.rectangle("fill", snek.x, snek.y, 20, 20)
-    i = 1
     if snekDirection == "right" or snekDirection == "left" then
-        while (i <= score + 3) do
+        for i = 1,score + 3,1 do    
             love.graphics.rectangle("fill", snekBodyX + (28 * i), snekBodyY, 20, 20)
-            i = i + 1
         end
     end
     if snekDirection == "up" or snekDirection == "down" then
-        while (i <= score + 3) do
+        for i = 1, score + 3, 1 do
             love.graphics.rectangle("fill", snekBodyX, snekBodyY + (28 * i), 20, 20)
-            i = i + 1
         end
     end
 end
