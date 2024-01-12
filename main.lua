@@ -7,7 +7,7 @@ function love.load()
     turnpointX = 0
     turnpointY = 0
     directionChanged = false
-    debug = io.open("debuggingyay.txt", "w")
+    -- debug = io.open("debuggingYay.txt", "w")
 end
 
 function love.update(dt)
@@ -53,11 +53,17 @@ function love.draw()
     love.graphics.rectangle("fill", snek.x, snek.y, 20, 20)
     if snekDirection == "right" or snekDirection == "left" then
         if directionChanged then
-            for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", turnpointX, turnpointY + 28 * i, 20, 20)
-                debug:write("first one " .. turnpointX .. "\n" .. turnpointY .. "\n")
+            n = 0
+            if n <= score + 3 then
+                for i = 1, score + 3, 1 do
+                    love.graphics.rectangle("fill", turnpointX, turnpointY + 28 * i, 20, 20)
+                end
+                n = n + 1
+            else
+                directionChanged = false
             end
-            directionChanged = false
+            --    debug:write("first one " .. turnpointX .. "\n" .. turnpointY .. "\n")
+            --    debug:write("first one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
         else
             for i = 1, score + 3, 1 do
                 love.graphics.rectangle("fill", snek.x + (28 * i), snek.y, 20, 20)
@@ -65,12 +71,18 @@ function love.draw()
         end
     end
     if snekDirection == "up" or snekDirection == "down" then
+        n = 0
         if directionChanged then
-            for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", turnpointX + 28 * i, turnpointY, 20, 20)
-                debug:write("second one " .. turnpointX .. "\n" .. turnpointY .. "\n")
+            if n <= score + 3 then
+                for i = 1, score + 3, 1 do
+                    love.graphics.rectangle("fill", turnpointX + 28 * i, turnpointY, 20, 20)
+                end
+                n = n + 1
+            else
+                directionChanged = false
             end
-            directionChanged = false
+            --    debug:write("second one " .. turnpointX .. "\n" .. turnpointY .. "\n")
+            --    debug:write("second one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
         else
             for i = 1, score + 3, 1 do
                 love.graphics.rectangle("fill", snek.x, snek.y + (28 * i), 20, 20)
