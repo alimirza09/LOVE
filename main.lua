@@ -56,7 +56,7 @@ function love.draw()
             n = 0
             if n <= score + 3 then
                 for i = 1, score + 3, 1 do
-                    love.graphics.rectangle("fill", turnpointX, turnpointY + 28 * i, 20, 20)
+                    drawSnekBody("lateral", turnpointX, turnpointY, i)
                 end
                 n = n + 1
             else
@@ -66,7 +66,7 @@ function love.draw()
             --    debug:write("first one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
         else
             for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", snek.x + (28 * i), snek.y, 20, 20)
+                love.graphics.rectangle("fill", snek.x + 28 * i, snek.y, 20, 20)
             end
         end
     end
@@ -75,7 +75,7 @@ function love.draw()
         if directionChanged then
             if n <= score + 3 then
                 for i = 1, score + 3, 1 do
-                    love.graphics.rectangle("fill", turnpointX + 28 * i, turnpointY, 20, 20)
+                    drawSnekBody("vertical", turnpointX, turnpointY, i)
                 end
                 n = n + 1
             else
@@ -85,8 +85,20 @@ function love.draw()
             --    debug:write("second one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
         else
             for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", snek.x, snek.y + (28 * i), 20, 20)
+                love.graphics.rectangle("fill", snek.x, snek.y + 28 * i, 20, 20)
             end
         end
+    end
+end
+
+function drawSnekBody(dimension, x, y, i, n)
+    if dimension == "vertical" then
+        if n == i + 1 then
+            love.graphics.rectangle("fill", x + 28 * i, y, 20, 20)
+        else
+            love.graphics.rectangle("fill", x, y + 28 * i, 20, 20)
+        end
+    elseif dimension == "lateral" then
+        love.graphics.rectangle("fill", x, y + 28 * i, 20, 20)
     end
 end

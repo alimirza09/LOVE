@@ -1,3 +1,4 @@
 # Ignore Hidden Files
 .vscode
 .luarc.json
+.debuggingYay.txt
