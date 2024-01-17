@@ -1,104 +1,158 @@
 function love.load()
-    snekDirection = "right"
-    snek = {}
-    snek.x = 100
-    snek.y = 100
+    gridXCount = 55
+    gridYCount = 40
     score = 0
-    turnpointX = 0
-    turnpointY = 0
-    directionChanged = false
-    -- debug = io.open("debuggingYay.txt", "w")
+    backgroundMusicSource = love.audio.newSource("backgroundMusic.wav", "static")
+
+    function moveFood()
+        local possibleFoodPositions = {}
+        for foodX = 1, gridXCount do
+            for foodY = 1, gridYCount do
+                local possible = true
+
+                for segmentIndex, segment in ipairs(snakeSegments) do
+                    if foodX == segment.x and foodY == segment.y then
+                        possible = false
+                    end
+                end
+
+                if possible then
+                    table.insert(possibleFoodPositions, { x = foodX, y = foodY })
+                end
+            end
+        end
+
+        foodPosition = possibleFoodPositions[
+        love.math.random(#possibleFoodPositions)
+        ]
+    end
+
+    function reset()
+        snakeSegments = {
+            { x = 3, y = 1 },
+            { x = 2, y = 1 },
+            { x = 1, y = 1 },
+        }
+        directionQueue = { 'right' }
+        snakeAlive = true
+        timer = 0
+        moveFood()
+    end
+
+    reset()
 end
 
 function love.update(dt)
-    function love.keypressed(key, scancode, isrepeat)
-        if isrepeat == false then
-            if scancode == "w" and snekDirection ~= "down" then
-                snekDirection = "up"
-                turnpointX = snek.x
-                turnpointY = snek.y
-                directionChanged = true
-            elseif scancode == "s" and snekDirection ~= "up" then
-                snekDirection = "down"
-                turnpointX = snek.x
-                turnpointY = snek.y
-                directionChanged = true
-            elseif scancode == "a" and snekDirection ~= "right" then
-                snekDirection = "left"
-                turnpointX = snek.x
-                turnpointY = snek.y
-                directionChanged = true
-            elseif scancode == "d" and snekDirection ~= "left" then
-                snekDirection = "right"
-                turnpointX = snek.x
-                turnpointY = snek.y
-                directionChanged = true
+    timer = timer + dt
+
+    if snakeAlive then
+        if timer >= 0.15 then
+            timer = 0
+
+            if #directionQueue > 1 then
+                table.remove(directionQueue, 1)
+            end
+
+            local nextXPosition = snakeSegments[1].x
+            local nextYPosition = snakeSegments[1].y
+
+            if directionQueue[1] == 'right' then
+                nextXPosition = nextXPosition + 1
+                if nextXPosition > gridXCount then
+                    nextXPosition = 1
+                end
+            elseif directionQueue[1] == 'left' then
+                nextXPosition = nextXPosition - 1
+                if nextXPosition < 1 then
+                    nextXPosition = gridXCount
+                end
+            elseif directionQueue[1] == 'down' then
+                nextYPosition = nextYPosition + 1
+                if nextYPosition > gridYCount then
+                    nextYPosition = 1
+                end
+            elseif directionQueue[1] == 'up' then
+                nextYPosition = nextYPosition - 1
+                if nextYPosition < 1 then
+                    nextYPosition = gridYCount
+                end
+            end
+
+            local canMove = true
+
+            for segmentIndex, segment in ipairs(snakeSegments) do
+                if segmentIndex ~= #snakeSegments
+                    and nextXPosition == segment.x
+                    and nextYPosition == segment.y then
+                    canMove = false
+                end
+            end
+
+            if canMove then
+                table.insert(snakeSegments, 1, {
+                    x = nextXPosition, y = nextYPosition
+                })
+
+                if snakeSegments[1].x == foodPosition.x
+                    and snakeSegments[1].y == foodPosition.y then
+                    moveFood()
+                    score = score + 1
+                else
+                    table.remove(snakeSegments)
+                end
+            else
+                snakeAlive = false
             end
         end
+    elseif timer >= 2 then
+        reset()
     end
+end
 
-    if snekDirection == "right" then
-        snek.x = snek.x + 100 * dt
-    elseif snekDirection == "left" then
-        snek.x = snek.x - 100 * dt
-    elseif snekDirection == "up" then
-        snek.y = snek.y - 100 * dt
-    elseif snekDirection == "down" then
-        snek.y = snek.y + 100 * dt
+function love.keypressed(key)
+    if key == 'd'
+        and directionQueue[#directionQueue] ~= 'right'
+        and directionQueue[#directionQueue] ~= 'left' then
+        table.insert(directionQueue, 'right')
+    elseif key == 'a'
+        and directionQueue[#directionQueue] ~= 'left'
+        and directionQueue[#directionQueue] ~= 'right' then
+        table.insert(directionQueue, 'left')
+    elseif key == 'w'
+        and directionQueue[#directionQueue] ~= 'up'
+        and directionQueue[#directionQueue] ~= 'down' then
+        table.insert(directionQueue, 'up')
+    elseif key == 's'
+        and directionQueue[#directionQueue] ~= 'down'
+        and directionQueue[#directionQueue] ~= 'up' then
+        table.insert(directionQueue, 'down')
     end
 end
 
 function love.draw()
-    love.graphics.setColor(0.07451, 0.960784, 0.019608)
-    love.graphics.rectangle("fill", snek.x, snek.y, 20, 20)
-    if snekDirection == "right" or snekDirection == "left" then
-        if directionChanged then
-            n = 0
-            if n <= score + 3 then
-                for i = 1, score + 3, 1 do
-                    drawSnekBody("lateral", turnpointX, turnpointY, i)
-                end
-                n = n + 1
-            else
-                directionChanged = false
-            end
-            --    debug:write("first one " .. turnpointX .. "\n" .. turnpointY .. "\n")
-            --    debug:write("first one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
-        else
-            for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", snek.x + 28 * i, snek.y, 20, 20)
-            end
-        end
+    local cellSize = 20
+    local font = love.graphics.newFont("PublicPixel.ttf")
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Score: " .. score, font, 10, 10)
+    local function drawCell(x, y)
+        love.graphics.rectangle(
+            'fill',
+            (x - 1) * cellSize,
+            (y - 1) * cellSize,
+            cellSize - 1,
+            cellSize - 1
+        )
     end
-    if snekDirection == "up" or snekDirection == "down" then
-        n = 0
-        if directionChanged then
-            if n <= score + 3 then
-                for i = 1, score + 3, 1 do
-                    drawSnekBody("vertical", turnpointX, turnpointY, i)
-                end
-                n = n + 1
-            else
-                directionChanged = false
-            end
-            --    debug:write("second one " .. turnpointX .. "\n" .. turnpointY .. "\n")
-            --    debug:write("second one snek.x " .. snek.x .. "\n" .. snek.y .. "\n")
-        else
-            for i = 1, score + 3, 1 do
-                love.graphics.rectangle("fill", snek.x, snek.y + 28 * i, 20, 20)
-            end
-        end
-    end
-end
 
-function drawSnekBody(dimension, x, y, i, n)
-    if dimension == "vertical" then
-        if n == i + 1 then
-            love.graphics.rectangle("fill", x + 28 * i, y, 20, 20)
+    for segmentIndex, segment in ipairs(snakeSegments) do
+        if snakeAlive then
+            love.graphics.setColor(0.07451, 0.960784, 0.019608)
         else
-            love.graphics.rectangle("fill", x, y + 28 * i, 20, 20)
+            love.graphics.setColor(.5, .5, .5)
         end
-    elseif dimension == "lateral" then
-        love.graphics.rectangle("fill", x, y + 28 * i, 20, 20)
+        drawCell(segment.x, segment.y)
     end
+
+    love.graphics.setColor(1, .3, .3)
+    drawCell(foodPosition.x, foodPosition.y)
 end
