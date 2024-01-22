@@ -1,44 +1,9 @@
+require("UI")
 function love.load()
     gridXCount = 55
-    gridYCount = 40
+    gridYCount = 35
     score = 0
-    backgroundMusicSource = love.audio.newSource("backgroundMusic.wav", "static")
-
-    function moveFood()
-        local possibleFoodPositions = {}
-        for foodX = 1, gridXCount do
-            for foodY = 1, gridYCount do
-                local possible = true
-
-                for segmentIndex, segment in ipairs(snakeSegments) do
-                    if foodX == segment.x and foodY == segment.y then
-                        possible = false
-                    end
-                end
-
-                if possible then
-                    table.insert(possibleFoodPositions, { x = foodX, y = foodY })
-                end
-            end
-        end
-
-        foodPosition = possibleFoodPositions[
-        love.math.random(#possibleFoodPositions)
-        ]
-    end
-
-    function reset()
-        snakeSegments = {
-            { x = 3, y = 1 },
-            { x = 2, y = 1 },
-            { x = 1, y = 1 },
-        }
-        directionQueue = { 'right' }
-        snakeAlive = true
-        timer = 0
-        moveFood()
-    end
-
+    cueMusic("backgroundMusic.wav", true)
     reset()
 end
 
@@ -97,6 +62,7 @@ function love.update(dt)
                     and snakeSegments[1].y == foodPosition.y then
                     moveFood()
                     score = score + 1
+                    cueMusic("AppleEat.wav", false)
                 else
                     table.remove(snakeSegments)
                 end
@@ -127,11 +93,19 @@ function love.keypressed(key)
         and directionQueue[#directionQueue] ~= 'up' then
         table.insert(directionQueue, 'down')
     end
+    --------------------------------------------------------------------------------
+    -- ____  ____   ___ ___ _     _____ ____       _    _     _____ ____ _____
+    -- / ___||  _ \ / _ \_ _| |   | ____|  _ \     / \  | |   | ____|  _ \_   _|
+    -- \___ \| |_) | | | | || |   |  _| | |_) |   / _ \ | |   |  _| | |_) || |
+    --  ___) |  __/| |_| | || |___| |___|  _ <   / ___ \| |___| |___|  _ < | |
+    -- |____/|_|    \___/___|_____|_____|_| \_\ /_/   \_\_____|_____|_| \_\|_|
+    ---------------------------------------------------------------------------------
 end
 
 function love.draw()
     local cellSize = 20
     local font = love.graphics.newFont("PublicPixel.ttf")
+    loadUI(font)
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Score: " .. score, font, 10, 10)
     local function drawCell(x, y)
@@ -155,4 +129,45 @@ function love.draw()
 
     love.graphics.setColor(1, .3, .3)
     drawCell(foodPosition.x, foodPosition.y)
+end
+
+function cueMusic(File, Loop)
+    local MusicSource = love.audio.newSource(File, "static")
+    MusicSource:setLooping(Loop)
+    MusicSource:play()
+end
+
+function moveFood()
+    local possibleFoodPositions = {}
+    for foodX = 1, gridXCount do
+        for foodY = 1, gridYCount do
+            local possible = true
+
+            for segmentIndex, segment in ipairs(snakeSegments) do
+                if foodX == segment.x and foodY == segment.y then
+                    possible = false
+                end
+            end
+
+            if possible then
+                table.insert(possibleFoodPositions, { x = foodX, y = foodY })
+            end
+        end
+    end
+    foodPosition = possibleFoodPositions[
+    love.math.random(#possibleFoodPositions)
+    ]
+end
+
+function reset()
+    snakeSegments = {
+        { x = 3, y = 1 },
+        { x = 2, y = 1 },
+        { x = 1, y = 1 },
+    }
+    directionQueue = { 'right' }
+    snakeAlive = true
+    timer = 0
+    score = 0
+    moveFood()
 end
