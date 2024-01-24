@@ -1,8 +1,8 @@
-require("UI")
 function love.load()
     gridXCount = 55
-    gridYCount = 35
+    gridYCount = 37
     score = 0
+    cellSize = 20
     cueMusic("backgroundMusic.wav", true)
     reset()
 end
@@ -66,9 +66,15 @@ function love.update(dt)
                 else
                     table.remove(snakeSegments)
                 end
+                if score == 10 then
+                    cutscene = true
+                end
             else
                 snakeAlive = false
             end
+        end
+        if cutscene == true then
+
         end
     elseif timer >= 2 then
         reset()
@@ -93,30 +99,13 @@ function love.keypressed(key)
         and directionQueue[#directionQueue] ~= 'up' then
         table.insert(directionQueue, 'down')
     end
-    --------------------------------------------------------------------------------
-    -- ____  ____   ___ ___ _     _____ ____       _    _     _____ ____ _____
-    -- / ___||  _ \ / _ \_ _| |   | ____|  _ \     / \  | |   | ____|  _ \_   _|
-    -- \___ \| |_) | | | | || |   |  _| | |_) |   / _ \ | |   |  _| | |_) || |
-    --  ___) |  __/| |_| | || |___| |___|  _ <   / ___ \| |___| |___|  _ < | |
-    -- |____/|_|    \___/___|_____|_____|_| \_\ /_/   \_\_____|_____|_| \_\|_|
-    ---------------------------------------------------------------------------------
 end
 
 function love.draw()
-    local cellSize = 20
     local font = love.graphics.newFont("PublicPixel.ttf")
-    loadUI(font)
+    love.graphics.setBackgroundColor(0.1607843137, 0.1568627451, 0.1607843137)
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Score: " .. score, font, 10, 10)
-    local function drawCell(x, y)
-        love.graphics.rectangle(
-            'fill',
-            (x - 1) * cellSize,
-            (y - 1) * cellSize,
-            cellSize - 1,
-            cellSize - 1
-        )
-    end
 
     for segmentIndex, segment in ipairs(snakeSegments) do
         if snakeAlive then
@@ -170,4 +159,14 @@ function reset()
     timer = 0
     score = 0
     moveFood()
+end
+
+function drawCell(x, y)
+    love.graphics.rectangle(
+        'fill',
+        (x - 1) * cellSize,
+        (y - 1) * cellSize,
+        cellSize - 1,
+        cellSize - 1
+    )
 end
