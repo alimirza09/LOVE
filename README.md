@@ -1,7 +1,6 @@
 # SNEK
 
-A DLC to the original snake, I am trying to add lore and some extra mechanics to snake.
-
+It's snake but in LOVE2D
 ## DEPENDENCIES
 
 LOVE2D and lua are the only dependencies right now!
