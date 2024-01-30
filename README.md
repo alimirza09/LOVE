@@ -4,7 +4,10 @@ It's snake but in LOVE2D
 ## DEPENDENCIES
 
 LOVE2D and lua are the only dependencies right now!
-
+## Installation Instructions
+1. Install [LOVE2D](https://love2d.org/) if you haven't already.
+2. Run the program by executing runScript.sh if you're on a unix based system or if you're on windows run runScript.bat
+3. Enjoy!
 ### Credits
 
 - Made by Muhammad Ali Mirza
